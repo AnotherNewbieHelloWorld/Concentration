@@ -41,5 +41,6 @@ class Concentration {
             cards += [card, card]
         }
         // TODO: Shuffle the cards + add a "new game" button
+        cards.shuffle()
     }
 }
