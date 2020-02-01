@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet var cardButtons: [UIButton]!
+    @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var flipCountLabel: UILabel!
     
     lazy var game: Concentration = {
@@ -20,6 +21,11 @@ class ViewController: UIViewController {
     var flipCount = 0 {
         didSet {
             flipCountLabel.text = "Flips: \(flipCount)"
+        }
+    }
+    var score = 0 {
+        didSet {
+            scoreLabel.text = "Score: \(score)"
         }
     }
     
@@ -34,12 +40,13 @@ class ViewController: UIViewController {
             print("chosen card was not incardButton.")
             return
         }
-        game.chooseCard(at: cardNumber)
+        score += game.chooseCard(at: cardNumber)
         updateViewFromModel()
     }
     
     @IBAction func startNewGame(_ sender: UIButton) {
         flipCount = 0
+        score = 0
         game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
         setTheme()
         

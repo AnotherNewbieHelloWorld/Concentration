@@ -14,13 +14,18 @@ class Concentration {
     var cards = [Card]()
     var indexOfOneAndOnlyFaceUpCard: Int?
     
-    func chooseCard(at index: Int) {
+    func chooseCard(at index: Int) -> Int {
+        var points = 0
         if !cards[index].isMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 // check if cards match
                 if cards[matchIndex].identifier == cards[index].identifier {
+                    points = 2
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
+                }
+                else {
+                    points = -1
                 }
                 cards[index].isFaceUp = true
                 indexOfOneAndOnlyFaceUpCard = nil
@@ -33,6 +38,7 @@ class Concentration {
                 indexOfOneAndOnlyFaceUpCard = index
             }
         }
+        return points
     }
     
     init(numberOfPairsOfCards: Int) {
