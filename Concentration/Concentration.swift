@@ -8,13 +8,40 @@
 
 import Foundation
 
-class Concentration {
+struct Concentration {
     
     // API is how you use this class
-    var cards = [Card]()
-    var indexOfOneAndOnlyFaceUpCard: Int?
     
-    func chooseCard(at index: Int) -> Int {
+    // "private(set) var" for peaple other than me it's almost like a "let"
+    // outside people can't modify it
+    private(set) var cards = [Card]()
+    
+    private var indexOfOneAndOnlyFaceUpCard: Int? {
+        get {
+            // look at all the cards and see if you find only one that’s face up
+            // if so, return it, else return nil
+            var foundIndex: Int?
+            for index in cards.indices {
+                if cards[index].isFaceUp {
+                    if foundIndex == nil {
+                        foundIndex = index
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            return foundIndex
+        }
+        set (newValue) {
+            // turn all the cards face down except the card at index newValue
+            for index in cards.indices {
+                cards[index].isFaceUp = (index == newValue)
+            }
+        }
+    }
+    
+    mutating func chooseCard(at index: Int) -> Int {
+        assert(cards.indices.contains(index), "Concentration.chooseCard(at: \(index)): chosen index not in the cards")
         var points = 0
         if cards[index].beenSeen {
             points = -1
@@ -28,13 +55,7 @@ class Concentration {
                     cards[index].isMatched = true
                 }
                 cards[index].isFaceUp = true
-                indexOfOneAndOnlyFaceUpCard = nil
             } else {
-                // either no cards or two cardsare face up
-                for flipDownIndex in cards.indices {
-                    cards[flipDownIndex].isFaceUp = false
-                }
-                cards[index].isFaceUp = true
                 indexOfOneAndOnlyFaceUpCard = index
             }
         }
@@ -43,11 +64,11 @@ class Concentration {
     }
     
     init(numberOfPairsOfCards: Int) {
+        assert(numberOfPairsOfCards > 0, "Concentration.init(at: \(numberOfPairsOfCards)): you must have at least one pair of cards")
         for _ in 1...numberOfPairsOfCards {
             let card = Card()
             cards += [card, card]
         }
-        // TODO: Shuffle the cards + add a "new game" button
         cards.shuffle()
     }
 }
