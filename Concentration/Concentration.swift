@@ -18,20 +18,10 @@ struct Concentration {
     
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
-            // look at all the cards and see if you find only one that’s face up
-            // if so, return it, else return nil
-            var foundIndex: Int?
-            for index in cards.indices {
-                if cards[index].isFaceUp {
-                    if foundIndex == nil {
-                        foundIndex = index
-                    } else {
-                        return nil
-                    }
-                }
-            }
-            return foundIndex
-        }
+            //let ch = "hello".oneAndOnly // return nil
+            //let ch = "h".oneAndOnly // return "h"
+            return cards.indices.filter { cards[$0].isFaceUp }.oneAndOnly
+         }
         set (newValue) {
             // turn all the cards face down except the card at index newValue
             for index in cards.indices {
@@ -49,7 +39,7 @@ struct Concentration {
         if !cards[index].isMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 // check if cards match
-                if cards[matchIndex].identifier == cards[index].identifier {
+                if cards[matchIndex] == cards[index] {
                     points = 2
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
@@ -70,5 +60,11 @@ struct Concentration {
             cards += [card, card]
         }
         cards.shuffle()
+    }
+}
+
+extension Collection {
+    var oneAndOnly: Element? {
+        return count == 1 ? first : nil
     }
 }
